@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 public class IntervalIndicatorView extends View {
 
@@ -32,6 +33,8 @@ public class IntervalIndicatorView extends View {
     };
 
     private Map<Paint, Long> paintIntervals = new HashMap<>();
+
+    private Timer timer;
 
     List<Paint> orderedPaints = new ArrayList<>();
 
@@ -137,6 +140,18 @@ public class IntervalIndicatorView extends View {
                 pointerPaint
         );
 
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        timer.schedule(new ViewInvalidatorTask(this), 5000, 5000);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        timer.cancel();
     }
 
     public void setInterval(Indicator type, long length) {
