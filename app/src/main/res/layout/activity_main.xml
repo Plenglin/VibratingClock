@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="io.github.plenglin.vibratingclock.MainActivity">
+
+    <!-- The poppity-uppity downitty part -->
+    <AbsoluteLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Clock active message -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_x="0dp"
+            android:layout_y="0dp"
+            android:translationY="-421dp">
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clock Active"
+                android:textSize="50dp"
+                android:textAlignment="center"/>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <!-- Clock configuration sliders -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="0dp"
+            android:layout_y="0dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Short Vibrate"
+                    android:textSize="20dp"/>
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <SeekBar
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:color="@color/clockRed"
+                    android:max="5"
+                    android:id="@+id/shortSlider"/>
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/shortTextView"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Double Vibrate"
+                    android:textSize="20dp"/>
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <SeekBar
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:color="@color/clockRed"
+                    android:max="5"
+                    android:id="@+id/doubleSlider"/>
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/doubleTextView"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Long Vibrate"
+                    android:textSize="20dp"/>
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <SeekBar
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:color="@color/clockRed"
+                    android:max="5"
+                    android:id="@+id/longSlider"/>
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/longTextView"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </AbsoluteLayout>
+
+    <!-- The clock part -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <io.github.plenglin.vibratingclock.IntervalIndicatorView
+            android:id="@+id/indicatorClock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>
