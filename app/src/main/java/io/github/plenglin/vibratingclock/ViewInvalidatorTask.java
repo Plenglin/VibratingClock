@@ -14,6 +14,6 @@ public class ViewInvalidatorTask extends TimerTask {
 
     @Override
     public void run() {
-        view.invalidate();
+        view.postInvalidate();
     }
 }

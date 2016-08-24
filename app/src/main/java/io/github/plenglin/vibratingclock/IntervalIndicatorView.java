@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class IntervalIndicatorView extends View {
 
     private Map<Paint, Long> paintIntervals = new HashMap<>();
 
-    private Timer timer;
+    private Timer timer = new Timer();
 
     List<Paint> orderedPaints = new ArrayList<>();
 
@@ -84,13 +83,6 @@ public class IntervalIndicatorView extends View {
         cPaint.setStyle(Paint.Style.FILL);
         cPaint.setStrokeWidth(5f);
         cPaint.setColor(r.getColor(R.color.clockBlue));
-
-        try {
-
-
-        } finally {
-            array.recycle();
-        }
 
     }
 
@@ -166,7 +158,6 @@ public class IntervalIndicatorView extends View {
             case C:
                 paintIntervals.put(cPaint, length);
         }
-        Log.d("VibratingClock", paintIntervals.toString());
     }
 
 }

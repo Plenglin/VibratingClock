@@ -1,6 +1,10 @@
 package io.github.plenglin.vibratingclock;
 
-public class VibrationInterval {
+import java.io.Serializable;
+
+public class VibrationInterval implements Serializable {
+
+    private static final long serialVersionUID = 543789341L;
 
     /**
      * The vibration pattern to play

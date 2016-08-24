@@ -3,81 +3,61 @@ package io.github.plenglin.vibratingclock;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Parcel;
-import android.os.RemoteException;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import java.io.FileDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
-public class PeriodicVibrationService extends Service implements IBinder {
+public class PeriodicVibrationService extends Service {
 
     private Timer timer;
+    private List<VibrationInterval> intervals = new ArrayList<>();
+    private boolean isActive;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        //timer.schedule(new PeriodicVibrationTask(getSystemService(VIBRATOR_SERVICE)));
+        Utils.log(Log.INFO, "Service created");
+        timer = new Timer();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        Utils.log(Log.INFO, "Service started");
+
+        intervals.add((VibrationInterval) intent.getSerializableExtra("a"));
+        intervals.add((VibrationInterval) intent.getSerializableExtra("b"));
+        intervals.add((VibrationInterval) intent.getSerializableExtra("c"));
+        setActiveState(true);
+        return 0;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        
+        Utils.log(Log.INFO, "Service destroyed");
+        setActiveState(false);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return this;
-    }
-
-    @Override
-    public String getInterfaceDescriptor() throws RemoteException {
         return null;
     }
 
-    @Override
-    public boolean pingBinder() {
-        return false;
-    }
-
-    @Override
-    public boolean isBinderAlive() {
-        return false;
-    }
-
-    @Override
-    public IInterface queryLocalInterface(String descriptor) {
-        return null;
-    }
-
-    @Override
-    public void dump(FileDescriptor fd, String[] args) throws RemoteException {
-
-    }
-
-    @Override
-    public void dumpAsync(FileDescriptor fd, String[] args) throws RemoteException {
-
-    }
-
-    @Override
-    public boolean transact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-        if (code == Constants.SERVICE_STOP_CODE) {
-            stopSelf();
+    public void setActiveState(boolean state) {
+        this.isActive = state;
+        if (isActive) {
+            long nextMinuteMillis = 60000 * (Utils.getMinutesSinceEpoch() + 1);
+            timer.schedule(new PeriodicVibrationTask((Vibrator) getSystemService(VIBRATOR_SERVICE), intervals), nextMinuteMillis - System.currentTimeMillis(), 60000);
+        } else {
+            timer.cancel();
         }
-        return false;
     }
 
-    @Override
-    public void linkToDeath(DeathRecipient recipient, int flags) throws RemoteException {
-
-    }
-
-    @Override
-    public boolean unlinkToDeath(DeathRecipient recipient, int flags) {
-        return false;
-    }
 }
