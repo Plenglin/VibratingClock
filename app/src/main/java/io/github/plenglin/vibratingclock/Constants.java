@@ -7,7 +7,7 @@ public class Constants {
     /**
      * Periodic Vibration Intervals
      */
-    public static final int[] INTERVALS = {1, 5, 10, 15, 30, 60};
+    public static final int[] INTERVALS = {-1, 1, 5, 10, 15, 30, 60};
 
     /**
      * Vibration lengths

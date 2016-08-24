@@ -1,6 +1,7 @@
 package io.github.plenglin.vibratingclock;
 
 import android.animation.AnimatorSet;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
@@ -19,8 +21,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private SeekBar shortSlider, doubleSlider, longSlider;
     private TextView shortTextView, doubleTextView, longTextView;
-    private HashMap<SeekBar, TextView> sliderDisplayMap;
-    private HashMap<SeekBar, IntervalIndicatorView.Indicator> sliderClockMap;
+    private Map<SeekBar, TextView> sliderDisplayMap = new HashMap<>();
+    private Map<SeekBar, IntervalIndicatorView.Indicator> sliderClockMap = new HashMap<>();
+    private Map<SeekBar, Integer> sliderColorMap = new HashMap<>();
 
     private IntervalIndicatorView indicatorClock;
 
@@ -40,9 +43,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         assert indicatorClock != null;
         indicatorClock.setOnClickListener(this);
 
-        sliderDisplayMap = new HashMap<>();
-        sliderClockMap = new HashMap<>();
-
         shortSlider = (SeekBar) findViewById(R.id.shortSlider);
         shortTextView = (TextView) findViewById(R.id.shortTextView);
         doubleSlider = (SeekBar) findViewById(R.id.doubleSlider);
@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         doubleSlider.setOnSeekBarChangeListener(this);
         longSlider.setOnSeekBarChangeListener(this);
 
+        sliderColorMap.put(shortSlider, getResources().getColor(R.color.clockRed));
+        sliderColorMap.put(doubleSlider, getResources().getColor(R.color.clockYellow));
+        sliderColorMap.put(longSlider, getResources().getColor(R.color.clockBlue));
+
         sliderDisplayMap.put(shortSlider, shortTextView);
         sliderDisplayMap.put(doubleSlider, doubleTextView);
         sliderDisplayMap.put(longSlider, longTextView);
@@ -62,17 +66,21 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         sliderClockMap.put(doubleSlider, IntervalIndicatorView.Indicator.B);
         sliderClockMap.put(longSlider, IntervalIndicatorView.Indicator.C);
 
-        shortSlider.setProgress(0);
-        doubleSlider.setProgress(1);
-        longSlider.setProgress(2);
+        shortSlider.setProgress(1);
+        doubleSlider.setProgress(2);
+        longSlider.setProgress(3);
 
     }
 
     public void updateIntervalIndicator(SeekBar seekBar) {
         Log.d("VibratingClock", "Seekbar updated");
         int interval = Constants.INTERVALS[seekBar.getProgress()];
-        sliderDisplayMap.get(seekBar).setText(String.format(getResources().getString(R.string.min), interval));
+        sliderDisplayMap.get(seekBar).setText(interval > 0 ? String.format(getResources().getString(R.string.min), interval) : getResources().getString(R.string.disabled));
         indicatorClock.setInterval(sliderClockMap.get(seekBar), interval);
+
+        int color = interval > 0 ? sliderColorMap.get(seekBar) : getResources().getColor(R.color.clockUnfilled);
+        seekBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        seekBar.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -101,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void setClockState(boolean state) {
         clockIsActive = state;
         if (clockIsActive) {
-            clockActiveMessage.setTranslationY(0);
-            clockConfiguration.setTranslationY(-1000f);
+            clockActiveMessage.animate().translationY(0).setDuration(300);
+            clockConfiguration.animate().translationY(-1000f).setDuration(300);
         } else {
-            clockActiveMessage.setTranslationY(-1000f);
-            clockConfiguration.setTranslationY(0);
+            clockActiveMessage.animate().translationY(-1000f).setDuration(300);
+            clockConfiguration.animate().translationY(0).setDuration(300);
         }
     }
 

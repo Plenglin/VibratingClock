@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Vibrating Clock</string>
     <string name="min">%s min</string>
+    <string name="disabled">Disabled</string>
 </resources>

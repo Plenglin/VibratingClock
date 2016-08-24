@@ -13,6 +13,7 @@ public class VibrationInterval {
     private long interval;
 
     public VibrationInterval(long[] pattern, long interval) {
+        assert interval > 0;
         this.pattern = pattern;
         this.interval = interval;
     }

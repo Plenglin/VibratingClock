@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -18,7 +15,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class IntervalIndicatorView extends View {
 
@@ -28,7 +24,16 @@ public class IntervalIndicatorView extends View {
 
     private Paint borderPaint, innerPaint, unfilledPaint, aPaint, bPaint, cPaint, pointerPaint;
 
+    private Comparator<Paint> paintComparator = new Comparator<Paint>() {
+        @Override
+        public int compare(Paint lhs, Paint rhs) {
+            return (int) (paintIntervals.get(lhs) - paintIntervals.get(rhs));
+        }
+    };
+
     private Map<Paint, Long> paintIntervals = new HashMap<>();
+
+    List<Paint> orderedPaints = new ArrayList<>();
 
     public IntervalIndicatorView(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -66,15 +71,15 @@ public class IntervalIndicatorView extends View {
         unfilledPaint.setColor(r.getColor(R.color.clockUnfilled));
 
         aPaint.setStyle(Paint.Style.FILL);
-        aPaint.setStrokeWidth(3f);
+        aPaint.setStrokeWidth(5f);
         aPaint.setColor(r.getColor(R.color.clockRed));
 
         bPaint.setStyle(Paint.Style.FILL);
-        bPaint.setStrokeWidth(3f);
+        bPaint.setStrokeWidth(5f);
         bPaint.setColor(r.getColor(R.color.clockYellow));
 
         cPaint.setStyle(Paint.Style.FILL);
-        cPaint.setStrokeWidth(3f);
+        cPaint.setStrokeWidth(5f);
         cPaint.setColor(r.getColor(R.color.clockBlue));
 
         try {
@@ -94,14 +99,9 @@ public class IntervalIndicatorView extends View {
         float cx = w / 2f, cy = h / 2f;
         float rad = .4f * w;
 
-        List<Paint> orderedPaints = new ArrayList<>();
+        orderedPaints.clear();
         orderedPaints.addAll(paintIntervals.keySet());
-        Collections.sort(orderedPaints, new Comparator<Paint>() {
-            @Override
-            public int compare(Paint lhs, Paint rhs) {
-                return (int) (paintIntervals.get(lhs) - paintIntervals.get(rhs));
-            }
-        });
+        Collections.sort(orderedPaints, paintComparator);
 
         // Draw the interval marks
         for (int m=0; m < 60; m++) {
@@ -112,7 +112,8 @@ public class IntervalIndicatorView extends View {
                     (float) (-rad * Math.cos(Math.toRadians(6 * m))) + cy,
                     unfilledPaint);
             for (Paint p: orderedPaints) {
-                if (m % paintIntervals.get(p) == 0) {
+                long interval = paintIntervals.get(p);
+                if (interval > 0 && m % interval == 0) {
                     canvas.drawLine(
                             cx, cy,
                             (float) (rad * Math.sin(Math.toRadians(6 * m))) + cx,
