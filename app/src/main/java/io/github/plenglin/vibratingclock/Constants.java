@@ -17,9 +17,9 @@ public class Constants {
     /**
      * Vibration patterns
      */
-    public static final int[]
-    SHORT_PATTERN = new int[] {0, SHORT_VIBRATION},
-    DOUBLE_PATTERN = new int[] {0, SHORT_VIBRATION, DOUBLE_PAUSE, SHORT_VIBRATION},
-    LONG_PATTERN = new int[] {0, LONG_VIBRATION};
+    public static final long[]
+    SHORT_PATTERN = new long[] {0, SHORT_VIBRATION},
+    DOUBLE_PATTERN = new long[] {0, SHORT_VIBRATION, DOUBLE_PAUSE, SHORT_VIBRATION},
+    LONG_PATTERN = new long[] {0, LONG_VIBRATION};
 
 }

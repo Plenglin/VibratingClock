@@ -1,14 +1,19 @@
 package io.github.plenglin.vibratingclock;
 
+import android.animation.AnimatorSet;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewPropertyAnimator;
+import android.view.animation.AnimationSet;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     private boolean clockIsActive = false;
 
@@ -19,11 +24,21 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private IntervalIndicatorView indicatorClock;
 
+    private View clockActiveMessage, clockConfiguration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        clockActiveMessage = findViewById(R.id.vibrationActiveMessage);
+        clockConfiguration = findViewById(R.id.configuration);
+
+        setClockState(false);
+
         indicatorClock = (IntervalIndicatorView) findViewById(R.id.indicatorClock);
+        assert indicatorClock != null;
+        indicatorClock.setOnClickListener(this);
 
         sliderDisplayMap = new HashMap<>();
         sliderClockMap = new HashMap<>();
@@ -75,4 +90,23 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v == indicatorClock) {
+            setClockState(!clockIsActive);
+        }
+    }
+
+    public void setClockState(boolean state) {
+        clockIsActive = state;
+        if (clockIsActive) {
+            clockActiveMessage.setTranslationY(0);
+            clockConfiguration.setTranslationY(-1000f);
+        } else {
+            clockActiveMessage.setTranslationY(-1000f);
+            clockConfiguration.setTranslationY(0);
+        }
+    }
+
 }

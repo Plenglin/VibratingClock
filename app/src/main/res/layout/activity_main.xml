@@ -18,6 +18,7 @@
 
         <!-- Clock active message -->
         <LinearLayout
+            android:id="@+id/vibrationActiveMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -42,6 +43,7 @@
 
         <!-- Clock configuration sliders -->
         <LinearLayout
+            android:id="@+id/configuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_x="0dp"

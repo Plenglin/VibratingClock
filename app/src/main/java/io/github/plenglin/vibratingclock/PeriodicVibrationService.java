@@ -9,10 +9,23 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
 import java.io.FileDescriptor;
+import java.util.Timer;
 
 public class PeriodicVibrationService extends Service implements IBinder {
 
+    private Timer timer;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //timer.schedule(new PeriodicVibrationTask(getSystemService(VIBRATOR_SERVICE)));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+    }
 
     @Nullable
     @Override
