@@ -9,7 +9,7 @@ public class Utils {
     }
 
     public static void log(int level, Object object) {
-        Log.println(level, Constants.LOG_TAG, object.toString());
+        Log.println(level, Constants.LOG_TAG, String.valueOf(object));
     }
 
 }

@@ -22,7 +22,9 @@ public class IntervalIndicatorView extends View {
         A, B, C
     }
 
-    private Paint borderPaint, innerPaint, unfilledPaint, aPaint, bPaint, cPaint, pointerPaint;
+    private Paint borderPaint, innerPaint, pointerPaint, unfilledPaint, textPaint, aPaint, bPaint, cPaint;
+
+    private boolean isActive = false;
 
     private Comparator<Paint> paintComparator = new Comparator<Paint>() {
         @Override
@@ -50,6 +52,7 @@ public class IntervalIndicatorView extends View {
         innerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         unfilledPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         aPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         cPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -71,6 +74,9 @@ public class IntervalIndicatorView extends View {
         unfilledPaint.setStyle(Paint.Style.FILL);
         unfilledPaint.setStrokeWidth(1f);
         unfilledPaint.setColor(r.getColor(R.color.clockUnfilled));
+
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setColor();
 
         aPaint.setStyle(Paint.Style.FILL);
         aPaint.setStrokeWidth(5f);

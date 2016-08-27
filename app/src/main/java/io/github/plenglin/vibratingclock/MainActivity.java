@@ -1,13 +1,12 @@
 package io.github.plenglin.vibratingclock;
 
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +18,10 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
-    private boolean clockIsActive = false;
+    private boolean clockActiveState = false;
+    private boolean clockInterfaceState = false;
+
+    private IBinder binder;
 
     private SeekBar shortSlider, doubleSlider, longSlider;
     private TextView shortTextView, doubleTextView, longTextView;
@@ -31,6 +33,15 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     private View clockActiveMessage, clockConfiguration;
 
+    private NotificationManager manager;
+
+    public NotificationManager getNotificationManager() {
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+        return manager;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         clockActiveMessage = findViewById(R.id.vibrationActiveMessage);
         clockConfiguration = findViewById(R.id.configuration);
 
-        setClockState(false);
+        setClockInterfaceState(false);
 
         indicatorClock = (IntervalIndicatorView) findViewById(R.id.indicatorClock);
         assert indicatorClock != null;
@@ -77,8 +88,35 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     }
 
     @Override
-    public void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        Utils.log(Log.DEBUG, getIntent().getAction());
+        if (getIntent().getAction().equals(Constants.STOP_ACTION)) {
+            setClockState(false);
+        } else {
+            setClockState(clockActiveState);
+        }
+        Utils.log(Log.INFO, "Starting MainActivity");
+        Utils.log(Log.DEBUG, clockActiveState);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Utils.log(Log.INFO, "Received new intent");
+        Utils.log(Log.DEBUG, intent.getAction());
+        if (getIntent().getAction().equals(Constants.STOP_ACTION)) {
+            setClockState(false);
+        } else {
+            setClockState(clockActiveState);
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
+        Utils.log(Log.INFO, "Destroying MainActivity");
+        setClockState(false);
     }
 
     public void updateIntervalIndicator(SeekBar seekBar) {
@@ -110,31 +148,43 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void onClick(View v) {
         if (v == indicatorClock) {
             Utils.log(Log.INFO, "indicatorClock touched");
-            setClockState(!clockIsActive);
+            setClockState(!clockActiveState);
         }
     }
 
     public void setClockState(boolean state) {
-        boolean previousState = clockIsActive;
-        clockIsActive = state;
+        boolean previousState = clockActiveState;
+        clockActiveState = state;
         Utils.log(Log.INFO, "setClockState() called");
-        if (!previousState && clockIsActive) {
+        if (!previousState && clockActiveState) {
             Utils.log(Log.INFO, "Turning clock on");
-            clockActiveMessage.animate().translationY(0).setDuration(300);
-            clockConfiguration.animate().translationY(-1000f).setDuration(300);
             Intent intent = new Intent(Constants.START_ACTION);
             intent.setClass(this, PeriodicVibrationService.class);
             intent.putExtra("a", new VibrationInterval(Constants.SHORT_PATTERN, Constants.INTERVALS[shortSlider.getProgress()]));
             intent.putExtra("b", new VibrationInterval(Constants.DOUBLE_PATTERN, Constants.INTERVALS[doubleSlider.getProgress()]));
             intent.putExtra("c", new VibrationInterval(Constants.LONG_PATTERN, Constants.INTERVALS[longSlider.getProgress()]));
             startService(intent);
-        } else if (previousState && !clockIsActive) {
+        } else if (previousState && !clockActiveState) {
             Utils.log(Log.INFO, "Turning clock off");
-            clockActiveMessage.animate().translationY(-1000f).setDuration(300);
-            clockConfiguration.animate().translationY(0).setDuration(300);
             Intent intent = new Intent(Constants.STOP_ACTION);
             intent.setClass(this, PeriodicVibrationService.class);
             stopService(intent);
+        }
+        setClockInterfaceState(state);
+    }
+
+    public void setClockInterfaceState(boolean state) {
+        boolean previousState = clockInterfaceState;
+        clockInterfaceState = state;
+        Utils.log(Log.INFO, "setClockInterfaceState() called");
+        if (!previousState && clockInterfaceState) {
+            Utils.log(Log.INFO, "Turning clock interface on");
+            clockActiveMessage.animate().translationY(0).setDuration(300);
+            clockConfiguration.animate().translationY(-1000f).setDuration(300);
+        } else if (previousState && !clockInterfaceState) {
+            Utils.log(Log.INFO, "Turning clock interface off");
+            clockActiveMessage.animate().translationY(-1000f).setDuration(300);
+            clockConfiguration.animate().translationY(0).setDuration(300);
         }
     }
 

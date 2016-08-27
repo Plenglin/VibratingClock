@@ -2,16 +2,29 @@ package io.github.plenglin.vibratingclock;
 
 public class Constants {
 
+    /*
     public static final int
     SERVICE_STOP_CODE = 348927,
     SERVICE_START_CODE = 782452,
     SERVICE_DESTROY_CODE =  540892;
+    */
 
+    /**
+     * Actions
+     */
     public static final String
     START_ACTION = "io.github.plenglin.VCLOCK_STARTITY_START",
     STOP_ACTION = "io.github.plenglin.VCLOCK_STOPPITY_STOP";
 
+    /**
+     * Tag used for logging
+     */
     public static final String LOG_TAG = "VibratingClock";
+
+    /**
+     * Notification ID
+     */
+    public static final int NOTIFICATION_ID = 3546978;
 
     /**
      * Periodic Vibration Intervals
